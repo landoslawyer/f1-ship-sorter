@@ -1,152 +1,49 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>F1 Ship Sorter</title>
-  <style>
-    /* Title in bold Garamond */
-    #sorterTitle {
-      font-family: Garamond, 'Times New Roman', serif;
-      font-weight: bold;
-      font-size: 30px;
-      color: #FEB3DD;
-      margin-bottom: 10px;
-    }
+#sorterTitle {
+  font-family: Garamond, 'Times New Roman', serif;
+  font-weight: bold;
+  font-size: 30px;
+  color: #FEB3DD;
+  margin-bottom: 10px;
+}
 
-    /* Description in regular Times New Roman */
-    #sorterDesc {
-      font-family: 'Times New Roman', serif;
-      font-size: 15px;
-      color: #000000;
-      margin-bottom: 20px;
-    }
+#sorterDesc {
+  font-family: 'Times New Roman', serif;
+  font-size: 15px;
+  color: #000000;
+  margin-bottom: 20px;
+}
 
-    /* Table styling */
-    #mainTable {
-      font-size: 15px;
-      font-family: 'Times New Roman', serif;
-      text-align: center;
-      vertical-align: middle;
-      width: 410px;
-      margin-left: auto;
-      margin-right: auto;
-      border-collapse: separate;
-      border-spacing: 10px 5px;
-    }
-    #leftField, #rightField {
-      width: 120px;
-      height: 150px;
-      border: 1px solid #000;
-      cursor: pointer;
-    }
-    .middleField {
-      width: 120px;
-      height: 70px;
-      border: 1px solid #000;
-      cursor: pointer;
-    }
-    a {
-      color: #e097d9;
-      text-decoration: none;
-    }
-    a:hover {
-      color: #8f8f8f;
-    }
-  </style>
-</head>
-<body>
-  <div style="width:600px; margin:0 auto; font-family:'Times New Roman', serif; text-align:center; background-color:#ffffff; color:#000000; padding:20px;">
-    <!-- Title -->
-    <h1 id="sorterTitle">F1 SHIPS</h1>
+#mainTable {
+  font-size: 15px;
+  font-family: 'Times New Roman', serif;
+  text-align: center;
+  vertical-align: middle;
+  width: 410px;
+  margin-left:auto;
+  margin-right:auto;
+  border-collapse: separate;
+  border-spacing: 10px 5px;
+}
 
-    <!-- Description -->
-    <p id="sorterDesc">
-      Pick who you like better in each battle to get an accurate list of your<br>
-      favorite ships on the grid.<br>
-      Note: hitting 'no opinion' or 'I like both' frequently will negatively affect your results.
-    </p>
+#leftField, #rightField {
+  width:120px;
+  height:150px;
+  border:1px solid #000;
+  cursor:pointer;
+}
 
-    <!-- Battle Table -->
-    <table id="mainTable" align="center">
-      <tbody>
-        <tr>
-          <td id="battleNumber" colspan="3" style="padding-bottom:10px; text-align:center;"><b>battle #1<br>0% sorted.</b></td>
-        </tr>
-        <tr>
-          <td id="leftField" onclick="if(finishFlag==0) sortList(-1);" rowspan="2" style="text-align:center;"></td>
-          <td class="middleField" onclick="if(finishFlag==0) sortList(0);" style="text-align:center;">I like both</td>
-          <td id="rightField" onclick="if(finishFlag==0) sortList(1);" rowspan="2" style="text-align:center;"></td>
-        </tr>
-        <tr>
-          <td class="middleField" onclick="if(finishFlag==0) sortList(0);" style="text-align:center;">no opinion</td>
-        </tr>
-      </tbody>
-    </table>
+.middleField {
+  width:120px;
+  height:70px;
+  border:1px solid #000;
+  cursor:pointer;
+}
 
-    <!-- Results -->
-    <div id="resultField" style="text-align:center; margin-top:20px;"></div>
-  </div>
+a {
+  color:#e097d9;
+  text-decoration:none;
+}
 
-  <script>
-    var namMember = [
-      "landoscar","norrussell","lewdo","charlando","norstappen","frando","carlando","norbon","geoscar",
-      "carcar","pialbon","choscar","britcedes","russtappen","galex","lecrussell","russonelli","bearnelli",
-      "kimico","chewis","chalex","charlos","lestappen","piarles","versainz","yukierre","lisack","gabico",
-      "carbono","brocedes","prosenna","sebmark","haasbands","dando","maxiel","maxcar","chestappen","sargebon",
-      "loscar","princess cake","sewis","webbonso"
-    ];
-
-    var lstMember=[], parent=[], equal=[], rec=[], cmp1, cmp2, head1, head2, nrec;
-    var numQuestion, totalSize, finishSize, finishFlag;
-
-    function initList(){
-      lstMember[0] = [];
-      for(var i=0;i<namMember.length;i++) lstMember[0][i]=i;
-      parent[0]=-1; totalSize=0;
-      var n=1;
-      for(var i=0;i<lstMember.length;i++){
-        if(lstMember[i].length>=2){
-          var mid=Math.ceil(lstMember[i].length/2);
-          lstMember[n]=lstMember[i].slice(0,mid); totalSize+=lstMember[n].length; parent[n]=i; n++;
-          lstMember[n]=lstMember[i].slice(mid,lstMember[i].length); totalSize+=lstMember[n].length; parent[n]=i; n++;
-        }
-      }
-      for(i=0;i<namMember.length;i++) rec[i]=0;
-      nrec=0; for(i=0;i<=namMember.length;i++) equal[i]=-1;
-      cmp1=lstMember.length-2; cmp2=lstMember.length-1; head1=head2=0;
-      numQuestion=1; finishSize=0; finishFlag=0;
-    }
-
-    function sortList(flag){
-      if(flag<0){rec[nrec]=lstMember[cmp1][head1]; head1++; nrec++; finishSize++;
-        while(equal[rec[nrec-1]]!=-1){ rec[nrec]=lstMember[cmp1][head1]; head1++; nrec++; finishSize++;}}
-      else if(flag>0){rec[nrec]=lstMember[cmp2][head2]; head2++; nrec++; finishSize++;
-        while(equal[rec[nrec-1]]!=-1){ rec[nrec]=lstMember[cmp2][head2]; head2++; nrec++; finishSize++;}}
-      else{
-        rec[nrec]=lstMember[cmp1][head1]; head1++; nrec++; finishSize++;
-        while(equal[rec[nrec-1]]!=-1){ rec[nrec]=lstMember[cmp1][head1]; head1++; nrec++; finishSize++;}
-        equal[rec[nrec-1]]=lstMember[cmp2][head2];
-        rec[nrec]=lstMember[cmp2][head2]; head2++; nrec++; finishSize++;
-        while(equal[rec[nrec-1]]!=-1){ rec[nrec]=lstMember[cmp2][head2]; head2++; nrec++; finishSize++;}
-      }
-      if(head1<lstMember[cmp1].length && head2==lstMember[cmp2].length)
-        while(head1<lstMember[cmp1].length){ rec[nrec]=lstMember[cmp1][head1]; head1++; nrec++; finishSize++;}
-      else if(head1==lstMember[cmp1].length && head2<lstMember[cmp2].length)
-        while(head2<lstMember[cmp2].length){ rec[nrec]=lstMember[cmp2][head2]; head2++; nrec++; finishSize++;}
-      if(head1==lstMember[cmp1].length && head2==lstMember[cmp2].length){
-        for(var i=0;i<lstMember[cmp1].length+lstMember[cmp2].length;i++)
-          lstMember[parent[cmp1]][i]=rec[i];
-        lstMember.pop(); lstMember.pop(); cmp1-=2; cmp2-=2; head1=head2=0;
-        if(head1==0 && head2==0){for(i=0;i<namMember.length;i++) rec[i]=0; nrec=0;}
-      }
-      if(cmp1<0){document.getElementById("battleNumber").innerHTML="All battles done!"; showResult(); finishFlag=1;}
-      else showImage();
-    }
-
-    function showResult(){
-      var ranking=1, sameRank=1, str="";
-      str += "<table style=\"width:200px; font-size:18px; line-height:120%; margin-left:auto; margin-right:auto; border:1px solid #000; border-collapse:collapse\" align=\"center\">";
-      str += "<tr><td style=\"color:#ffffff; background-color:#e097d9; text-align:center;\">rank</td><td style=\"color:#ffffff; background-color:#e097d9; text-align:center;\">options</td></tr>";
-      for(var i=0;i<namMember.length;i++){
-        str += "<tr><td style=\"border:1px solid #000; text-align:center; padding-right:5px;\">"+ranking+"</td><td style=\"border:1px solid #000; padding-left:5px;\">"+namMember[lstMember[0][i]]+"</td></tr>";
-        if(i<namMember.length-1){ if(equal[lstMember[0][i]]==lstMember[0][i+1]) sameRank++; else {ran
+a:hover {
+  color:#8f8f8f;
+}
